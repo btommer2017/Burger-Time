@@ -1,98 +1,89 @@
+<div style ="margin-left:38%">
 <h1>Burgers!</h1>
 
-<h2>Burgers Ready To Eat!</h2>
-
-<ul>
-  {{#each burgers}}
-    {{#unless devoured}}
-      {{> burgers/burger-block devoured=true}}
-    {{/unless}}
-  {{/each}}
-</ul>
-
-<h2>Burgers that are devoured!</h2>
-
-<ul>
-  {{#each burgers}}
-    {{#if devoured}}
-      {{> burgers/burger-block devoured=false}}
-    {{/if}}
-  {{/each}}
-</ul>
 
 <h2>Add a burger</h2>
 <form class="create-form">
 
   <div class="form-group">
-    <label for="ca">Type of Burger:</label>
-    <input type="text" id="ca" name="name">
+    <label for="newb">Type of Burger:</label>
+    <input type="text" id="newb" name="name">
   </div>
 
   <button type="submit">Add Burger</button>
 </form>
+</div>
+
+<div style="float:left; margin-left: 10%">
+<h2>Burgers Ready To Eat!</h2>
+<ul>
+  {{#each burger}}
+    {{#unless devoured}}
+    <p>{{this.burger_name}}
+      <button data-planid="{{this.id}}" class="eatBurger">Eat Burger!</button>
+    </p>
+     {{/unless}}
+  {{/each}}
+</ul>
+</div>
+
+<div style="float:right; margin-right:10%">
+<h2>Burgers that are devoured!</h2>
+<ul>
+  {{#each burger}}
+    {{#if devoured}}
+    <p>{{this.burger_name}}</p>
+    {{/if}}
+  {{/each}}
+</ul>
+</div>
+
 
 
 
 <script type="text/javascript">
-
-// Make sure we wait to attach our handlers until the DOM is fully loaded.
-$(function() {
-  $(".change-sleep").on("click", function(event) {
-    var id = $(this).data("id");
-    var newSleep = $(this).data("newsleep");
-
-    var newSleepState = {
-      sleepy: newSleep
+$(".eatBurger").on("click", function(event) {
+  //var newId= $(this).data("planid");
+  //console.log(newId);
+    var id = {
+      table: "burgers",
+      condition: "devoured",
+      burgerID: $(this).data("planid") + ""
     };
+console.log(id);
 
     // Send the PUT request.
-    $.ajax("/api/cats/" + id, {
+    $.ajax("/api/burgers/:id", {
       type: "PUT",
-      data: newSleepState
+      data: id
     }).then(
       function() {
-        console.log("changed sleep to", newSleep);
-        // Reload the page to get the updated list
+
         location.reload();
       }
     );
   });
 
   $(".create-form").on("submit", function(event) {
-    // Make sure to preventDefault on a submit event.
     event.preventDefault();
-
-    var newCat = {
-      name: $("#ca").val().trim(),
-      sleepy: $("[name=sleepy]:checked").val().trim()
-    };
+    var newBurger = {
+      table: "burgers",
+      column: "burger_name",
+      name: $("#newb").val().trim()
+              };
+console.log(newBurger);
 
     // Send the POST request.
-    $.ajax("/api/cats", {
+    $.ajax("/api/burgers", {
       type: "POST",
-      data: newCat
+      data: newBurger
     }).then(
       function() {
-        console.log("created new cat");
+        console.log("created new Burger!!!");
         // Reload the page to get the updated list
         location.reload();
       }
     );
   });
 
-  $(".delete-cat").on("click", function(event) {
-    var id = $(this).data("id");
-
-    // Send the DELETE request.
-    $.ajax("/api/cats/" + id, {
-      type: "DELETE"
-    }).then(
-      function() {
-        console.log("deleted cat", id);
-        // Reload the page to get the updated list
-        location.reload();
-      }
-    );
-  });
-});
 </script>
