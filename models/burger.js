@@ -13,9 +13,9 @@ var burger = {
     // The variables cols and vals are arrays.
     insertOne: function(table, col, vals, cb) {
       orm.insertOne(table, col, vals, function(res) {
-       console.log(table);
-       console.log(col);
-       console.log(vals);
+      //  console.log(table);
+      //  console.log(col);
+      //  console.log(vals);
         cb(res);
       });
     },
